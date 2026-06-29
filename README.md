@@ -1,58 +1,239 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Pengelolaan Nilai Raport Siswa (SMP Kelas 7-9)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Sistem informasi berbasis web untuk mengelola nilai raport siswa, mendukung Kurikulum Merdeka, dengan fitur input nilai per semester, cetak raport otomatis, dan leger kelas.
 
-## About Laravel
+<!--
+TODO: Tambahkan badge di sini setelah CI/CD & demo siap, contoh:
+![Build Status](https://github.com/username/sistem-raport/workflows/tests/badge.svg)
+![License](https://img.shields.io/badge/license-MIT-blue)
+-->
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+🔗 **[Live Demo](#)** &nbsp;|&nbsp; 🎥 **[Video Walkthrough](#)** &nbsp;|&nbsp; 📄 **[Dokumentasi API](#)**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<!-- TODO: ganti tanda # di atas dengan link asli setelah deploy -->
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Daftar Isi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- [Latar Belakang & Masalah](#latar-belakang--masalah)
+- [Fitur Utama](#fitur-utama)
+- [Tech Stack](#tech-stack)
+- [Arsitektur & Desain Database](#arsitektur--desain-database)
+- [Tantangan Teknis & Solusi](#tantangan-teknis--solusi)
+- [Screenshot](#screenshot)
+- [Instalasi](#instalasi)
+- [Menjalankan Test](#menjalankan-test)
+- [Role & Hak Akses](#role--hak-akses)
+- [Roadmap](#roadmap)
+- [Struktur Folder](#struktur-folder)
+- [Lisensi](#lisensi)
+- [Kontak](#kontak)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Latar Belakang & Masalah
 
-## Agentic Development
+<!--
+TODO: Tulis 2-4 kalimat tentang masalah nyata yang melatari proyek ini.
+Contoh kerangka:
+- Proses apa yang sebelumnya manual? (misal: rekap nilai pakai Excel terpisah per guru)
+- Apa risikonya? (salah hitung rata-rata, raport telat cetak, data hilang saat pergantian guru)
+- Siapa yang terdampak? (wali kelas, kepala sekolah, orang tua)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Contoh isi:
+"Di [nama sekolah], proses rekap nilai raport sebelumnya dilakukan manual oleh
+masing-masing guru mata pelajaran menggunakan spreadsheet terpisah, kemudian
+digabung manual oleh wali kelas menjelang pembagian raport. Proses ini rawan
+human error pada penghitungan rata-rata, sulit dilacak riwayatnya, dan
+memakan waktu 3-5 hari kerja setiap akhir semester. Sistem ini dibangun untuk
+mengotomasi proses tersebut sekaligus menyediakan riwayat nilai siswa yang
+konsisten dari kelas 7 hingga 9."
+-->
 
-```bash
-composer require laravel/boost --dev
+## Fitur Utama
 
-php artisan boost:install
+- ✅ Input nilai akhir semester per mata pelajaran (dengan validasi hak akses guru per mapel)
+- ✅ Generate deskripsi capaian kompetensi otomatis (template per rentang nilai, Kurikulum Merdeka)
+- ✅ Cetak raport per siswa dalam format PDF
+- ✅ Leger nilai per kelas (rekap seluruh siswa & mapel dalam satu kelas)
+- ✅ Manajemen data master: siswa, guru, mata pelajaran, kelas, tahun ajaran
+- ✅ Perhitungan otomatis rata-rata nilai per siswa per semester
+- ✅ Role-based access control (Admin, Guru Mapel, Wali Kelas, Kepala Sekolah)
+- ✅ Riwayat kelas siswa antar tahun ajaran (kenaikan kelas terlacak)
+    <!-- TODO: tambah/hapus baris sesuai fitur yang benar-benar selesai diimplementasikan -->
+
+## Tech Stack
+
+| Layer         | Teknologi                          | Alasan Pemilihan                                                           |
+| ------------- | ---------------------------------- | -------------------------------------------------------------------------- |
+| Backend       | Laravel 11 (PHP 8.2+)              | Ekosistem matang, built-in auth & validation, cocok untuk CRUD-heavy app   |
+| Database      | MySQL 8                            | Relasional, cocok untuk data terstruktur dengan banyak relasi antar tabel  |
+| Frontend      | Blade + Tailwind CSS               | Server-rendered, ringan, tidak perlu API terpisah untuk skala satu sekolah |
+| Auth & Role   | Laravel Breeze + Spatie Permission | Role-based access control yang battle-tested                               |
+| PDF Generator | barryvdh/laravel-dompdf            | Generate raport langsung dari template Blade                               |
+| Testing       | Pest / PHPUnit                     | <!-- TODO: pilih salah satu, hapus yang tidak dipakai -->                  |
+
+<!--
+TODO: Jika menambah fitur lain (queue untuk notifikasi, Excel export, dsb),
+tambahkan baris baru di tabel ini dengan alasannya. Reviewer portofolio
+sangat menghargai *alasan* di balik pilihan teknis, bukan cuma daftar nama tools.
+-->
+
+## Arsitektur & Desain Database
+
+<!--
+TODO: Tempel/screenshot ER Diagram di sini.
+Jelaskan singkat keputusan desain non-trivial, contoh:
+- Kenapa riwayat kelas dipisah dari tabel siswa (untuk melacak histori kenaikan kelas)
+- Kenapa ada tabel pivot guru_mapel (untuk membatasi guru hanya input nilai mapel yang diampu)
+-->
+
+```
+[Sisipkan gambar ERD di sini, contoh: ![ERD](docs/erd.png)]
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+**Keputusan desain penting:**
 
-## Contributing
+1. **Riwayat kelas terpisah dari data siswa** — siswa pindah kelas setiap tahun ajaran, sehingga riwayat ditampung di tabel tersendiri agar raport tahun-tahun sebelumnya tetap akurat meski siswa sudah naik kelas.
+2. **Tabel pivot guru-mapel-kelas** — menjadi basis otorisasi: guru hanya bisa menginput nilai untuk mapel dan kelas yang benar-benar diampu, dicek lewat Policy class.
+ <!-- TODO: tambahkan keputusan desain lain yang relevan -->
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Tantangan Teknis & Solusi
 
-## Code of Conduct
+<!--
+TODO: Ini bagian yang PALING dihargai reviewer/interviewer. Tulis 2-4 studi kasus
+nyata yang kamu temui selama development. Format STAR (Situation-Task-Action-Result)
+bekerja baik di sini. Contoh kerangka:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Studi Kasus 1: [Nama masalah]
+**Masalah:** ...
+**Solusi:** ...
+**Hasil:** ...
 
-## Security Vulnerabilities
+Contoh isi nyata (edit sesuai pengalaman kamu):
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Studi Kasus 1: Mencegah duplikasi input nilai
+**Masalah:** Guru bisa input nilai dobel untuk siswa, mapel, dan semester yang sama
+tanpa sadar, menyebabkan data tidak konsisten di leger.
+**Solusi:** Menambahkan unique constraint composite (siswa_id, mapel_id, semester,
+tahun_ajaran_id) di level database, dikombinasikan dengan validasi di Form Request
+agar pesan error informatif (bukan generic 500 error).
+**Hasil:** Tidak ada lagi data nilai ganda; UX juga lebih baik karena guru langsung
+diarahkan ke mode edit jika nilai sudah pernah diinput.
 
-## License
+### Studi Kasus 2: [isi sesuai pengalamanmu]
+...
+-->
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Screenshot
+
+<!--
+TODO: Tambahkan screenshot/GIF dari fitur-fitur utama. Urutan yang disarankan:
+1. Dashboard (per role berbeda jika ada)
+2. Form input nilai
+3. Tampilan leger kelas
+4. Hasil cetak raport PDF
+-->
+
+| Dashboard Admin                              | Input Nilai                                      |
+| -------------------------------------------- | ------------------------------------------------ |
+| ![dashboard](docs/screenshots/dashboard.png) | ![input-nilai](docs/screenshots/input-nilai.png) |
+
+| Leger Kelas                          | Raport PDF                             |
+| ------------------------------------ | -------------------------------------- |
+| ![leger](docs/screenshots/leger.png) | ![raport](docs/screenshots/raport.png) |
+
+## Instalasi
+
+```bash
+# 1. Clone repository
+git clone https://github.com/USERNAME/sistem-raport.git
+cd sistem-raport
+
+# 2. Install dependencies
+composer install
+npm install
+
+# 3. Setup environment
+cp .env.example .env
+php artisan key:generate
+
+# 4. Konfigurasi database di .env, lalu jalankan migrasi + seeder
+php artisan migrate --seed
+
+# 5. Build asset frontend
+npm run build
+
+# 6. Jalankan server lokal
+php artisan serve
+```
+
+Akses aplikasi di `http://127.0.0.1:8000`.
+
+**Akun demo (dari seeder):**
+
+| Role       | Email               | Password      |
+| ---------- | ------------------- | ------------- |
+| Admin      | admin@demo.test     | <!-- TODO --> |
+| Guru       | guru@demo.test      | <!-- TODO --> |
+| Wali Kelas | walikelas@demo.test | <!-- TODO --> |
+
+<!-- TODO: pastikan seeder benar-benar membuat akun ini sebelum publish -->
+
+## Menjalankan Test
+
+```bash
+php artisan test
+```
+
+<!--
+TODO: Setelah test ditulis, jelaskan singkat apa yang di-cover, misal:
+"Test mencakup: validasi rentang nilai (0-100), perhitungan rata-rata,
+otorisasi guru per mapel, dan generate PDF raport."
+-->
+
+## Role & Hak Akses
+
+| Role           | Hak Akses                                                                             |
+| -------------- | ------------------------------------------------------------------------------------- |
+| Admin          | Kelola seluruh data master (siswa, guru, mapel, kelas, tahun ajaran), kelola pengguna |
+| Guru Mapel     | Input & edit nilai untuk mapel dan kelas yang diampu saja                             |
+| Wali Kelas     | Lihat leger kelas yang diampu, cetak raport, input nilai sikap                        |
+| Kepala Sekolah | Lihat seluruh laporan (read-only), approve/tanda tangan digital raport                |
+
+## Roadmap
+
+- [ ] Export rekap nilai ke Excel
+- [ ] Notifikasi email otomatis ke wali kelas saat semua nilai mapel sudah lengkap
+- [ ] Modul nilai P5 (Projek Penguatan Profil Pelajar Pancasila)
+- [ ] API REST untuk akses orang tua/siswa (read-only)
+  <!-- TODO: sesuaikan dengan rencana pengembangan lanjutan -->
+
+## Struktur Folder
+
+```
+app/
+├── Http/Controllers/   # Menerima request, delegasikan ke Service
+├── Models/             # Siswa, Guru, Mapel, Kelas, Nilai, dst.
+├── Services/           # Logika bisnis (hitung rata-rata, validasi akses)
+├── Policies/           # Otorisasi per role/resource
+└── Exports/            # Generator PDF/Excel
+routes/
+└── web.php             # Route dikelompokkan per role dengan middleware
+database/
+├── migrations/         # Skema tabel
+└── seeders/            # Data dummy untuk testing & demo
+```
+
+## Lisensi
+
+<!-- TODO: pilih lisensi, contoh MIT jika ingin proyek ini open-source di portofolio -->
+
+Proyek ini menggunakan lisensi [MIT](LICENSE).
+
+## Kontak
+
+<!-- TODO: isi dengan info kontak kamu -->
+
+Dibuat oleh **[Nama Kamu]** — [LinkedIn](#) · [Email](#) · [Portofolio](#)
