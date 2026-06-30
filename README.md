@@ -61,7 +61,7 @@ konsisten dari kelas 7 hingga 9."
 - ✅ Perhitungan otomatis rata-rata nilai per siswa per semester
 - ✅ Role-based access control (Admin, Guru Mapel, Wali Kelas, Kepala Sekolah)
 - ✅ Riwayat kelas siswa antar tahun ajaran (kenaikan kelas terlacak)
-    <!-- TODO: tambah/hapus baris sesuai fitur yang benar-benar selesai diimplementasikan -->
+  <!-- TODO: tambah/hapus baris sesuai fitur yang benar-benar selesai diimplementasikan -->
 
 ## Tech Stack
 
