@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->enum('semester', ['ganjil', 'genap']);
-            $table->boolean('status_aktif')->default('false');
+            $table->boolean('status_aktif')->default(false);
             $table->timestamps();
         });
     }

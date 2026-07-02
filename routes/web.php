@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GuruController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MapelController;
@@ -20,6 +21,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('mapel', MapelController::class);
+    Route::resource('guru', GuruController::class);
 });
 
 require __DIR__ . '/auth.php';
